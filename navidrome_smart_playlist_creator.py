@@ -375,69 +375,92 @@ class SmartPlaylistCreator:
             self.out(f"[green]Saved:[/green] {path}")
             break
 
+    # ── Helpers ────────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _parse_number(raw: str) -> Any:
+        """Parse as int if possible, otherwise float."""
+        try:
+            return int(raw)
+        except ValueError:
+            return float(raw)
+
     # ── Condition builder ─────────────────────────────────────────────────────
 
     def build_condition(self, depth: int = 0) -> Optional[Dict[str, Any]]:
-        """Guide the user through building one rule or nested rule group."""
+        """Guide the user through building one rule or nested rule group.
+
+        Back-navigation: cancel at field → back to category,
+        cancel at operator → back to field, cancel at category → return None.
+        """
         self.rule(f"{'Sub-' * depth}Add a Rule")
 
-        # Show categories directly, with 'Nested rule group' as an extra option
-        cat_options: List[Tuple[str, str]] = [(c, c) for c in self.fields]
-        cat_options.append(
-            ("__group__", "[bold magenta]+ Nested rule group[/bold magenta]  [dim](sub-AND/OR)[/dim]")
-        )
-        category = self.select_option(
-            "Choose a field category:",
-            cat_options,
-            allow_back=True,
-        )
-        if category is None:
-            return None
+        while True:  # ── Category loop (back here = cancel to caller)
+            cat_options: List[Tuple[str, str]] = [(c, c) for c in self.fields]
+            cat_options.append(
+                ("__group__", "[bold magenta]+ Nested rule group[/bold magenta]  [dim](sub-AND/OR)[/dim]")
+            )
+            category = self.select_option(
+                "Choose a field category:",
+                cat_options,
+                allow_back=True,
+            )
+            if category is None:
+                return None
 
-        if category == "__group__":
-            return self._build_rule_group(depth + 1)
+            if category == "__group__":
+                result = self._build_rule_group(depth + 1)
+                if result is not None:
+                    return result
+                continue  # group cancelled → back to category list
 
-        # ── Single rule: Field → Operator → Value ──
+            # ── Field loop (back → re-show categories)
+            while True:
+                field_entries = self.fields[str(category)]
+                f_options: List[Tuple[str, str]] = [
+                    (key, f"{desc}  [dim]({ftype})[/dim]")
+                    for key, desc, ftype in field_entries
+                ]
+                field_key = self.select_option(
+                    f"Choose a field  [dim][{category}][/dim]:",
+                    f_options,
+                    allow_back=True,
+                )
+                if field_key is None:
+                    break  # back to category
+                field_key = str(field_key)
 
-        # Step 1 — Field
-        field_entries = self.fields[str(category)]
-        f_options: List[Tuple[str, str]] = [
-            (key, f"{desc}  [dim]({ftype})[/dim]")
-            for key, desc, ftype in field_entries
-        ]
-        field_key = self.select_option(
-            f"Choose a field  [dim][{category}][/dim]:",
-            f_options,
-            allow_back=True,
-        )
-        if field_key is None:
-            return None
-        field_key = str(field_key)
+                _, field_label, field_type = next(
+                    (k, d, t) for k, d, t in field_entries if k == field_key
+                )
+                self.out(f"\n  [cyan]Field:[/cyan] {field_label}  [dim]({field_type})[/dim]")
 
-        _, field_label, field_type = next(
-            (k, d, t) for k, d, t in field_entries if k == field_key
-        )
-        self.out(f"\n  [cyan]Field:[/cyan] {field_label}  [dim]({field_type})[/dim]")
+                # ── Operator loop (back → re-show fields)
+                while True:
+                    op_entries = self.operators.get(field_type, self.operators["string"])
+                    operator = self.select_option(
+                        "Choose a condition:",
+                        list(op_entries),
+                        allow_back=True,
+                    )
+                    if operator is None:
+                        break  # back to field
+                    operator = str(operator)
+                    op_label = next(d for k, d in op_entries if k == operator)
+                    self.out(f"  [cyan]Condition:[/cyan] {field_label} -> {op_label}")
 
-        # Step 3 — Operator
-        op_entries = self.operators.get(field_type, self.operators["string"])
-        operator = self.select_option(
-            "Choose a condition:",
-            list(op_entries),
-            allow_back=True,
-        )
-        if operator is None:
-            return None
-        operator = str(operator)
-        op_label = next(d for k, d in op_entries if k == operator)
-        self.out(f"  [cyan]Condition:[/cyan] {field_label} -> {op_label}")
+                    # ── Value (always completes)
+                    value = self._prompt_value(field_key, field_label, field_type, operator)
 
-        # Step 4 — Value
-        value = self._prompt_value(field_key, field_label, field_type, operator)
+                    condition = {operator: {field_key: value}}
+                    self.out(f"\n[bold green]Rule added:[/bold green] [dim]{json.dumps(condition)}[/dim]")
+                    return condition
 
-        condition = {operator: {field_key: value}}
-        self.out(f"\n[bold green]Rule added:[/bold green] [dim]{json.dumps(condition)}[/dim]")
-        return condition
+                # Operator cancelled → back to field list
+                continue
+
+            # Field cancelled → back to category list
+            continue
 
     def _build_rule_group(self, depth: int = 1) -> Optional[Dict[str, Any]]:
         """Build a nested rule group (sub-group with its own AND/OR logic)."""
@@ -462,15 +485,14 @@ class SmartPlaylistCreator:
             condition = self.build_condition(depth)
             if condition:
                 conditions.append(condition)
-            elif not conditions:
-                # Nothing added yet and user cancelled — let them abandon the group
-                if not self.confirm("No rules added yet. Keep building this group?", default=True):
-                    return None
-                continue
-            if conditions:
                 self._show_conditions_summary(conditions, logic)
                 if not self.confirm("Add another rule to this sub-group?", default=False):
                     break
+            elif not conditions:
+                # No rules yet and user cancelled — offer escape
+                if not self.confirm("No rules added yet. Keep building this group?", default=True):
+                    return None
+            # else: cancelled while having rules — silently loop back
 
         if not conditions:
             return None
@@ -506,9 +528,10 @@ class SmartPlaylistCreator:
             self.out(f"[dim]Enter the start and end values for \"{label}\".[/dim]")
             while True:
                 try:
-                    return [int(self.prompt("From")), int(self.prompt("To"))]
+                    return [self._parse_number(self.prompt("From")),
+                            self._parse_number(self.prompt("To"))]
                 except ValueError:
-                    self.out("[red]Please enter whole numbers.[/red]")
+                    self.out("[red]Please enter valid numbers.[/red]")
 
         if operator == "inTheRange" and ftype == "date":
             self.out("[dim]Dates must be in YYYY-MM-DD format.[/dim]")
@@ -540,9 +563,9 @@ class SmartPlaylistCreator:
             while True:
                 raw = self.prompt(f"Value for \"{label}\"")
                 try:
-                    return int(raw)
+                    return self._parse_number(raw)
                 except ValueError:
-                    self.out("[red]Please enter a whole number.[/red]")
+                    self.out("[red]Please enter a number.[/red]")
 
         # String
         examples = {
@@ -613,14 +636,14 @@ class SmartPlaylistCreator:
             condition = self.build_condition()
             if condition:
                 conditions.append(condition)
-            elif not conditions:
-                if not self.confirm("No rules added yet. Keep building this playlist?", default=True):
-                    return None
-                continue
-            if conditions:
                 self._show_conditions_summary(conditions, logic)
                 if not self.confirm("\nAdd another rule?", default=False):
                     break
+            elif not conditions:
+                # No rules yet and user cancelled — offer escape
+                if not self.confirm("No rules added yet. Keep building this playlist?", default=True):
+                    return None
+            # else: cancelled while having rules — silently loop back
 
         playlist[logic] = conditions
 
@@ -693,7 +716,7 @@ class SmartPlaylistCreator:
         default_name = "".join(
             c for c in playlist.get("name", "playlist").lower().replace(" ", "-")
             if c.isalnum() or c in "-_"
-        )
+        ) or "playlist"
         self.out("\n[dim]Choose a filename (the .nsp extension will be added automatically).[/dim]")
         filename = self.prompt("Filename", default=default_name)
         if not filename.endswith(".nsp"):

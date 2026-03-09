@@ -381,24 +381,11 @@ class SmartPlaylistCreator:
         """Guide the user through building one rule or nested rule group."""
         self.rule(f"{'Sub-' * depth}Add a Rule")
 
-        what = self.select_option(
-            "What would you like to add?",
-            [
-                ("rule",  "A single rule  [dim](e.g. genre is 'Rock')[/dim]"),
-                ("group", "A rule group    [dim](nested AND/OR sub-group)[/dim]"),
-            ],
-            allow_back=True,
-        )
-        if what is None:
-            return None
-
-        if what == "group":
-            return self._build_rule_group(depth + 1)
-
-        # ── Single rule: Category → Field → Operator → Value ──
-
-        # Step 1 — Category
+        # Show categories directly, with 'Nested rule group' as an extra option
         cat_options: List[Tuple[str, str]] = [(c, c) for c in self.fields]
+        cat_options.append(
+            ("__group__", "[bold magenta]+ Nested rule group[/bold magenta]  [dim](sub-AND/OR)[/dim]")
+        )
         category = self.select_option(
             "Choose a field category:",
             cat_options,
@@ -407,7 +394,12 @@ class SmartPlaylistCreator:
         if category is None:
             return None
 
-        # Step 2 — Field
+        if category == "__group__":
+            return self._build_rule_group(depth + 1)
+
+        # ── Single rule: Field → Operator → Value ──
+
+        # Step 1 — Field
         field_entries = self.fields[str(category)]
         f_options: List[Tuple[str, str]] = [
             (key, f"{desc}  [dim]({ftype})[/dim]")
@@ -459,7 +451,10 @@ class SmartPlaylistCreator:
                 ("all", "[bold]ALL[/bold] must match   [dim](AND)[/dim]"),
                 ("any", "[bold]ANY[/bold] can match    [dim](OR)[/dim]"),
             ],
+            allow_back=True,
         )
+        if logic is None:
+            return None
         logic = str(logic)
 
         conditions: List[Dict[str, Any]] = []
@@ -467,12 +462,15 @@ class SmartPlaylistCreator:
             condition = self.build_condition(depth)
             if condition:
                 conditions.append(condition)
-            if not conditions:
-                self.out("[yellow]You need at least one rule in this group.[/yellow]")
+            elif not conditions:
+                # Nothing added yet and user cancelled — let them abandon the group
+                if not self.confirm("No rules added yet. Keep building this group?", default=True):
+                    return None
                 continue
-            self._show_conditions_summary(conditions, logic)
-            if not self.confirm("Add another rule to this sub-group?", default=False):
-                break
+            if conditions:
+                self._show_conditions_summary(conditions, logic)
+                if not self.confirm("Add another rule to this sub-group?", default=False):
+                    break
 
         if not conditions:
             return None
@@ -607,7 +605,7 @@ class SmartPlaylistCreator:
         self.rule("Build Rules")
         self.out(
             "\n[dim]Rules decide which tracks are included. You need at least one.\n"
-            "You can add single rules or nested groups (sub-AND/OR logic).[/dim]\n"
+            "Choose a category to add a rule, or select 'Nested rule group' for sub-AND/OR logic.[/dim]\n"
         )
         conditions: List[Dict[str, Any]] = []
 
@@ -615,12 +613,14 @@ class SmartPlaylistCreator:
             condition = self.build_condition()
             if condition:
                 conditions.append(condition)
-            self._show_conditions_summary(conditions, logic)
-            if not conditions:
-                self.out("[yellow]You need at least one rule — let's add one.[/yellow]")
+            elif not conditions:
+                if not self.confirm("No rules added yet. Keep building this playlist?", default=True):
+                    return None
                 continue
-            if not self.confirm("\nAdd another rule?", default=False):
-                break
+            if conditions:
+                self._show_conditions_summary(conditions, logic)
+                if not self.confirm("\nAdd another rule?", default=False):
+                    break
 
         playlist[logic] = conditions
 

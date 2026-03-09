@@ -83,15 +83,15 @@ What would you like to do?
 
 Choose **Create a new smart playlist** and the wizard walks you through five steps:
 
-1. **Details** — name and optional description
-2. **Rule logic** — ALL must match (AND) or ANY can match (OR), with plain-English explanation
-3. **Rules** — add one or more conditions. For each rule you choose:
-   - **Single rule** or **Rule group** (nested sub-group with its own AND/OR logic)
-   - For single rules: pick a **category** → **field** → **operator** → **value**
+1. **Rule logic** — ALL must match (AND) or ANY can match (OR), with plain-English explanation
+2. **Rules** — add one or more conditions. For each rule you choose:
+   - Pick a **category** (or select **Nested rule group** for sub-AND/OR logic)
+   - For single rules: pick a **field** → **operator** → **value** (with full back-navigation at every step)
    - For rule groups: choose AND/OR for the sub-group, then add rules inside it (supports infinite nesting)
    - A live summary panel displays all rules built so far after each addition
-4. **Sort order** — choose one or multiple sort fields; each gets its own ascending/descending direction
-5. **Limit** — optionally cap the number of tracks
+3. **Sort order** — choose one or multiple sort fields; each gets its own ascending/descending direction
+4. **Limit** — optionally cap the number of tracks
+5. **Details** — name and optional description (asked last, so you can name it based on what you built)
 
 After completing the wizard, the generated JSON is previewed and you can confirm before saving.
 

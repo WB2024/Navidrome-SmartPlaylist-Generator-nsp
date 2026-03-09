@@ -597,18 +597,6 @@ class SmartPlaylistCreator:
     def create_smart_playlist(self) -> Optional[Dict[str, Any]]:
         playlist: Dict[str, Any] = {}
 
-        # ── Name & description
-        self.rule("Playlist Details")
-        self.out("\n[dim]Give your playlist a name.[/dim]")
-        name = self.prompt("Name", default="My Smart Playlist")
-        if name:
-            playlist["name"] = name
-
-        self.out("\n[dim]Optional: a short description (press Enter to skip).[/dim]")
-        comment = self.prompt("Description", default="")
-        if comment:
-            playlist["comment"] = comment
-
         # ── Logic (ALL / ANY)
         self.rule("Rule Logic")
         self.out(
@@ -696,6 +684,18 @@ class SmartPlaylistCreator:
                     break
                 except ValueError:
                     self.out("[red]Please enter a whole number.[/red]")
+
+        # ── Name & description (at the end so you know what the playlist does)
+        self.rule("Playlist Details")
+        self.out("\n[dim]Now that you've built your rules, give the playlist a name.[/dim]")
+        name = self.prompt("Name", default="My Smart Playlist")
+        if name:
+            playlist["name"] = name
+
+        self.out("\n[dim]Optional: a short description (press Enter to skip).[/dim]")
+        comment = self.prompt("Description", default="")
+        if comment:
+            playlist["comment"] = comment
 
         return playlist
 

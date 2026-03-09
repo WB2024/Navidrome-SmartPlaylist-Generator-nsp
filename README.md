@@ -1,6 +1,6 @@
-# 🎵 Navidrome Smart Playlist Creator
+# Navidrome Smart Playlist Creator
 
-A beautiful, interactive CLI tool for creating `.nsp` (Navidrome Smart Playlist) files — no manual JSON editing required.
+A fully guided, interactive CLI tool for creating `.nsp` (Navidrome Smart Playlist) files — no JSON editing, no memorising field names or operator syntax.
 
 ![Python](https://img.shields.io/badge/Python-3.7%2B-3776AB?style=flat-square&logo=python&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
@@ -12,19 +12,20 @@ A beautiful, interactive CLI tool for creating `.nsp` (Navidrome Smart Playlist)
 
 [Navidrome](https://www.navidrome.org/) Smart Playlists are dynamic playlists defined as JSON objects stored in `.nsp` files. They automatically populate based on rules you define — things like "all songs I've loved from the 80s" or "high-quality tracks I haven't played recently."
 
-This tool guides you through building those JSON rules via an interactive menu, handles all the formatting, and saves the finished `.nsp` file directly to your playlist directory.
+This tool guides you through building those JSON rules entirely through numbered menus, handles all the formatting, and saves the finished `.nsp` file directly to your playlist directory.
 
 ---
 
 ## Features
 
-- **Interactive menu-driven interface** — no JSON knowledge required
-- **Full field support** — string, numeric, boolean, and date field types
+- **Fully guided numbered menus** — no typing field names, operators, or syntax
+- **Categorised field browser** — fields grouped into Track Info, File Info, Listening Stats, Library Info, and Extra Tags
+- **Plain-English operator descriptions** — e.g. "Is greater than" instead of `gt`
+- **Type-aware value prompts** — booleans become Yes/No, dates show format hints, numerics show contextual examples
+- **Live rules summary** — shows all rules built so far after each addition
 - **Nested logic** — combine rules with `all` (AND) or `any` (OR)
-- **Multi-field sorting** — sort by multiple fields with per-field direction control
 - **Persistent config** — remembers your playlist directory between sessions
 - **Example playlists** — built-in reference examples to get you started
-- **Field & operator reference** — view available fields and operators at any prompt
 - **Beautiful UI** — enhanced display via [`rich`](https://github.com/Textualize/rich) (optional, degrades gracefully)
 
 ---
@@ -58,91 +59,152 @@ This tool guides you through building those JSON rules via an interactive menu, 
 
 ## Usage
 
-On first run, you will be prompted to set your playlist directory — the folder where Navidrome scans for `.nsp` files (typically inside your `PlaylistsPath` or music library folder).
+On first run, set your playlist directory — the folder where Navidrome scans for `.nsp` files (any subfolder inside your music library works). The path is saved and remembered for future sessions.
 
 ```
-============================================================
-  NAVIDROME SMART PLAYLIST CREATOR
-============================================================
+  Navidrome Smart Playlist Creator
+  Generate .nsp files for Navidrome dynamic playlists
 
-  [1] Set/Change Playlist Directory
-  [2] Create New Smart Playlist
-  [3] View Field Reference
-  [4] View Operator Reference
-  [5] Show Example Playlists
-  [6] Exit
+Save directory: /music/SmartPlaylists
+
+What would you like to do?
+  1.  Create a new smart playlist
+  2.  Browse example playlists
+  3.  View all available fields
+  4.  Set / change save directory
+  5.  Exit
 ```
 
 ### Creating a Playlist
 
-Select **[2]** and the tool will walk you through:
+Choose **Create a new smart playlist** and the wizard walks you through five steps:
 
-1. **Name & description** — give your playlist a title and optional comment
-2. **Rules** — add one or more conditions (field + operator + value)
-3. **Logic** — combine conditions with `all` (every rule must match) or `any` (at least one must match)
-4. **Sorting** — choose a sort field and direction, including multi-field sorting
+1. **Details** — name and optional description
+2. **Rule logic** — ALL must match (AND) or ANY can match (OR), with plain-English explanation
+3. **Rules** — add one or more conditions:
+   - Pick a **category** from a numbered menu (Track Info, File Info, etc.)
+   - Pick a **field** from a numbered list with descriptions
+   - Pick an **operator** — shown in plain English, filtered to match the field's type
+   - Enter a **value** — booleans become Yes/No selections, dates show format hints, numerics show contextual examples
+   - A live summary panel displays all rules built so far after each addition
+4. **Sort order** — choose from a numbered list; ascending/descending presented as a follow-up choice
 5. **Limit** — optionally cap the number of tracks
-6. **Preview & save** — review the generated JSON before saving
 
-The tool saves your playlist to the configured directory with a `.nsp` extension, ready to be picked up on the next Navidrome library scan.
+After completing the wizard, the generated JSON is previewed and you can confirm before saving.
 
 ---
 
 ## Fields Reference
 
-| Category | Fields |
-|---|---|
-| **String** | `title`, `album`, `artist`, `albumartist`, `genre`, `composer`, `comment`, `lyrics`, `filepath`, `filetype`, `grouping`, `discsubtitle`, `albumtype`, `albumcomment`, `catalognumber` |
-| **Numeric** | `year`, `tracknumber`, `discnumber`, `size`, `duration`, `bitrate`, `bitdepth`, `bpm`, `channels`, `playcount`, `rating`, `library_id` |
-| **Boolean** | `loved`, `hascoverart`, `compilation` |
-| **Date** | `date`, `originaldate`, `releasedate`, `dateadded`, `datemodified`, `dateloved`, `lastplayed`, `daterated` |
+Fields are grouped into categories in the tool's menus.
 
-Additional fields from Navidrome's tag mappings are also supported, including MusicBrainz IDs (`mbz_album_id`, `mbz_artist_id`, `mbz_recording_id`, etc.) and any custom tags imported from your music files.
+### Track Info
+
+| Field | Description | Type |
+|---|---|---|
+| `title` | Track title | String |
+| `artist` | Artist name | String |
+| `albumartist` | Album artist | String |
+| `album` | Album name | String |
+| `genre` | Genre | String |
+| `composer` | Composer | String |
+| `year` | Year of release | Numeric |
+| `tracknumber` | Track number | Numeric |
+| `discnumber` | Disc number | Numeric |
+| `duration` | Duration (seconds) | Numeric |
+| `bpm` | Beats per minute | Numeric |
+
+### File Info
+
+| Field | Description | Type |
+|---|---|---|
+| `filetype` | File type (e.g. `flac`, `mp3`, `aac`) | String |
+| `filepath` | Path relative to music library root | String |
+| `bitrate` | Bitrate (kbps) | Numeric |
+| `bitdepth` | Bit depth | Numeric |
+| `size` | File size (bytes) | Numeric |
+| `channels` | Audio channels | Numeric |
+| `hascoverart` | Has cover art | Boolean |
+
+### Listening Stats
+
+| Field | Description | Type |
+|---|---|---|
+| `playcount` | Times played | Numeric |
+| `rating` | Rating (0–5) | Numeric |
+| `loved` | Marked as loved | Boolean |
+| `lastplayed` | Date last played | Date |
+| `dateloved` | Date marked as loved | Date |
+| `daterated` | Date rated | Date |
+
+### Library Info
+
+| Field | Description | Type |
+|---|---|---|
+| `dateadded` | Date added to library | Date |
+| `datemodified` | Date file was modified | Date |
+| `compilation` | Part of a compilation | Boolean |
+| `library_id` | Library ID (multi-library setups) | Numeric |
+
+### Extra Tags
+
+| Field | Description | Type |
+|---|---|---|
+| `comment` | Comment tag | String |
+| `lyrics` | Lyrics | String |
+| `grouping` | Grouping | String |
+| `discsubtitle` | Disc subtitle | String |
+| `albumtype` | Album type | String |
+| `albumcomment` | Album comment | String |
+| `catalognumber` | Catalog number | String |
 
 ---
 
 ## Operators Reference
 
-| Operator | Description | Applies To |
+Operators are automatically filtered in the tool to only show the ones valid for the selected field type.
+
+| Operator | Plain-English Label | Applies To |
 |---|---|---|
-| `is` | Equal | String, Number, Boolean |
-| `isNot` | Not equal | String, Number, Boolean |
-| `gt` | Greater than | Number |
-| `lt` | Less than | Number |
-| `contains` | Contains substring | String |
+| `is` | Is exactly | String, Numeric, Boolean |
+| `isNot` | Is not | String, Numeric, Boolean |
+| `contains` | Contains | String |
 | `notContains` | Does not contain | String |
 | `startsWith` | Starts with | String |
 | `endsWith` | Ends with | String |
-| `inTheRange` | Inclusive range | Array of two numbers or dates |
-| `before` | Before date | Date (`YYYY-MM-DD`) |
-| `after` | After date | Date (`YYYY-MM-DD`) |
-| `inTheLast` | Within the last N days | Number of days |
-| `notInTheLast` | Not within the last N days | Number of days |
-| `inPlaylist` | Track is in another playlist | Playlist ID |
-| `notInPlaylist` | Track is not in another playlist | Playlist ID |
+| `gt` | Is greater than | Numeric |
+| `lt` | Is less than | Numeric |
+| `inTheRange` | Is between (range) | Numeric, Date |
+| `inTheLast` | Within the last N days | Date |
+| `notInTheLast` | Not within the last N days | Date |
+| `after` | After a specific date | Date |
+| `before` | Before a specific date | Date |
 
 ---
 
 ## Sorting
 
-Sort by a single field:
-```
-"sort": "year", "order": "desc"
-```
+The tool presents sort options as a numbered list. Available sort fields:
 
-Sort by multiple fields using comma separation. Prefix with `+` (ascending, default) or `-` (descending):
-```
-"sort": "year,-rating,title"
-```
+`random` · `title` · `artist` · `album` · `year` · `rating` · `playcount` · `lastplayed` · `dateadded` · `duration` · `bitrate`
 
-Use `random` for a shuffled playlist:
+Selecting **Random** shuffles the playlist on every access. All other fields prompt for Ascending or Descending direction.
+
+In the raw JSON:
+```json
+"sort": "year",
+"order": "desc"
 ```
+or for shuffle:
+```json
 "sort": "random"
 ```
 
 ---
 
 ## Example Playlists
+
+The tool includes these as built-in browsable examples (**Browse example playlists** from the main menu).
 
 ### Recently Played
 Tracks played in the last 30 days, most recent first:
@@ -172,7 +234,7 @@ Loved or highly-rated songs from the 1980s:
 }
 ```
 
-### High Quality Tracks
+### High Quality (FLAC)
 Lossless FLAC files only:
 ```json
 {
@@ -187,27 +249,15 @@ Lossless FLAC files only:
 }
 ```
 
-### All Songs (Random)
-Every track in your library, shuffled:
+### Loved Tracks
+All loved tracks, newest-loved first:
 ```json
 {
-  "all": [{ "gt": { "playcount": -1 } }],
-  "sort": "random",
-  "limit": 1000
-}
-```
-
-### Multi-Library Filter
-High-rated songs from a specific library:
-```json
-{
-  "name": "High-Rated Songs from Library 2",
-  "all": [
-    { "gt": { "rating": 3 } },
-    { "is": { "library_id": 2 } }
-  ],
-  "sort": "random",
-  "limit": 100
+  "name": "Loved",
+  "all": [{ "is": { "loved": true } }],
+  "sort": "dateloved",
+  "order": "desc",
+  "limit": 500
 }
 ```
 
@@ -215,28 +265,27 @@ High-rated songs from a specific library:
 
 ## How Navidrome Imports Playlists
 
-Place your `.nsp` files in:
-- Any folder within your music library, **or**
-- The path specified by the `PlaylistsPath` configuration option
+Place your `.nsp` files anywhere inside your music library folder. Navidrome walks the entire music directory during a scan and imports any `.nsp` files it finds.
 
-Navidrome automatically detects and imports them during the next library scan. Smart Playlists refresh automatically when accessed, with a minimum delay configurable via `SmartPlaylistRefreshDelay` (default: `5s`).
+> **Recommended:** Create a `SmartPlaylists/` subfolder inside your music library root and save all `.nsp` files there to keep them tidy.
 
-> **Tip:** You can also use [Feishin](https://github.com/jeffvli/feishin/), a desktop/web Subsonic client, for graphical playlist editing that syncs back to Navidrome.
+Navidrome automatically detects and imports them on the next library scan. Smart Playlists refresh automatically when accessed, with a minimum delay configurable via `SmartPlaylistRefreshDelay` (default: `5s`).
+
+> **Note:** If you use a separate `PlaylistsPath` Docker volume, the internal scanner may not discover it depending on your Navidrome version. Placing `.nsp` files directly inside your music library is the most reliable approach.
 
 ---
 
 ## Configuration
 
-The tool saves your playlist directory to `~/.navidrome_playlist_config.json` so you don't have to re-enter it each session. To change it, select **[1] Set/Change Playlist Directory** from the main menu.
+The tool saves your playlist directory to `~/.navidrome_playlist_config.json` so you don't have to re-enter it each session. To change it, choose **Set / change save directory** from the main menu.
 
 ---
 
 ## Notes
 
-- Dates must be in `YYYY-MM-DD` format
-- Boolean values must not be quoted: `true` / `false`
+- Dates must be in `YYYY-MM-DD` format — the tool shows this hint automatically
+- Boolean fields (`loved`, `hascoverart`, `compilation`) are presented as Yes/No selections — no typing required
 - `filepath` is relative to your music library root (no leading `/music` prefix)
-- To use `inPlaylist` / `notInPlaylist`, get the playlist ID from the Navidrome UI URL: `.../playlists/<ID>`
 - The `_` character may be ignored in `contains` / `endsWith` conditions — adjust accordingly
 
 ---

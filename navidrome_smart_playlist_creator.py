@@ -802,6 +802,332 @@ class SmartPlaylistCreator:
                 for key, desc, ftype in entries:
                     print(f"  {key:<30} {desc} ({ftype})")
 
+    # ── Presets ─────────────────────────────────────────────────────────────
+
+    PRESETS: List[Tuple[str, str, str, Dict[str, Any]]] = [
+        # (menu_label, filename, category, playlist_dict)
+
+        # ── Essentials ─────────────────────────────────────────────────
+        ("Recently Played", "recently-played", "Essentials", {
+            "name": "Recently Played",
+            "comment": "Tracks played in the last 30 days",
+            "all": [{"inTheLast": {"lastplayed": 30}}],
+            "sort": "lastplayed", "order": "desc", "limit": 100,
+        }),
+        ("Recently Added", "recently-added", "Essentials", {
+            "name": "Recently Added",
+            "comment": "Tracks added to the library in the last 30 days",
+            "all": [{"inTheLast": {"dateadded": 30}}],
+            "sort": "dateadded", "order": "desc", "limit": 200,
+        }),
+        ("Most Played", "most-played", "Essentials", {
+            "name": "Most Played",
+            "comment": "Your top 100 most-played tracks of all time",
+            "all": [{"gt": {"playcount": 0}}],
+            "sort": "playcount", "order": "desc", "limit": 100,
+        }),
+        ("Never Played", "never-played", "Essentials", {
+            "name": "Never Played",
+            "comment": "Tracks you haven't listened to yet",
+            "all": [{"is": {"playcount": 0}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Loved Tracks", "loved-tracks", "Essentials", {
+            "name": "Loved Tracks",
+            "comment": "All your favourited tracks, newest first",
+            "all": [{"is": {"loved": True}}],
+            "sort": "dateloved", "order": "desc", "limit": 500,
+        }),
+        ("Top Rated", "top-rated", "Essentials", {
+            "name": "Top Rated",
+            "comment": "Tracks rated 4 stars or higher",
+            "all": [{"gt": {"rating": 3}}],
+            "sort": "rating", "order": "desc", "limit": 200,
+        }),
+
+        # ── Discovery ──────────────────────────────────────────────────
+        ("Fresh Blood", "fresh-blood", "Discovery", {
+            "name": "Fresh Blood",
+            "comment": "Added in the last 7 days and never played — your unheard new arrivals",
+            "all": [
+                {"inTheLast": {"dateadded": 7}},
+                {"is": {"playcount": 0}},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("Vinyl Roulette", "vinyl-roulette", "Discovery", {
+            "name": "Vinyl Roulette",
+            "comment": "50 completely random tracks — spin the wheel",
+            "all": [{"gt": {"duration": 0}}],
+            "sort": "random", "limit": 50,
+        }),
+        ("One-Hit Wonders", "one-hit-wonders", "Discovery", {
+            "name": "One-Hit Wonders",
+            "comment": "Tracks you've played exactly once — give them a second chance",
+            "all": [{"is": {"playcount": 1}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Album Openers", "album-openers", "Discovery", {
+            "name": "Album Openers",
+            "comment": "Track 1 from every album — first impressions only",
+            "all": [{"is": {"track": 1}}],
+            "sort": "random", "limit": 100,
+        }),
+
+        # ── Rediscovery ────────────────────────────────────────────────
+        ("Forgotten Gems", "forgotten-gems", "Rediscovery", {
+            "name": "Forgotten Gems",
+            "comment": "Loved or highly-rated tracks you haven't played in 6+ months",
+            "all": [
+                {"any": [{"is": {"loved": True}}, {"gt": {"rating": 3}}]},
+                {"notInTheLast": {"lastplayed": 180}},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("Comebacks", "comebacks", "Rediscovery", {
+            "name": "Comebacks",
+            "comment": "Played 5+ times but not in the last 6 months — old favourites gathering dust",
+            "all": [
+                {"gt": {"playcount": 4}},
+                {"notInTheLast": {"lastplayed": 180}},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("Buried Treasure", "buried-treasure", "Rediscovery", {
+            "name": "Buried Treasure",
+            "comment": "Added over a year ago and never played — lost in the stacks",
+            "all": [
+                {"notInTheLast": {"dateadded": 365}},
+                {"is": {"playcount": 0}},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+
+        # ── Moods & Vibes ──────────────────────────────────────────────
+        ("Long Drives", "long-drives", "Moods & Vibes", {
+            "name": "Long Drives",
+            "comment": "Epic tracks over 6 minutes — settle in for the ride",
+            "all": [{"gt": {"duration": 360}}],
+            "sort": "duration", "order": "desc", "limit": 100,
+        }),
+        ("Short & Sweet", "short-and-sweet", "Moods & Vibes", {
+            "name": "Short & Sweet",
+            "comment": "Quick hits under 3 minutes",
+            "all": [{"lt": {"duration": 180}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Deep Cuts", "deep-cuts", "Moods & Vibes", {
+            "name": "Deep Cuts",
+            "comment": "Tracks 5+ on the album — beyond the singles",
+            "all": [{"gt": {"track": 4}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Slow Burners", "slow-burners", "Moods & Vibes", {
+            "name": "Slow Burners",
+            "comment": "Tracks under 100 BPM — chill, downtempo, mellow",
+            "all": [
+                {"lt": {"bpm": 100}},
+                {"gt": {"bpm": 0}},
+            ],
+            "sort": "bpm", "order": "asc", "limit": 100,
+        }),
+        ("Bangers Only", "bangers-only", "Moods & Vibes", {
+            "name": "Bangers Only",
+            "comment": "High-energy tracks over 140 BPM",
+            "all": [{"gt": {"bpm": 140}}],
+            "sort": "bpm", "order": "desc", "limit": 100,
+        }),
+
+        # ── Quality & Format ──────────────────────────────────────────
+        ("FLAC Attack", "flac-attack", "Quality & Format", {
+            "name": "FLAC Attack",
+            "comment": "Lossless FLAC files only — audiophile approved",
+            "all": [{"is": {"filetype": "flac"}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Hi-Res Audio", "hi-res-audio", "Quality & Format", {
+            "name": "Hi-Res Audio",
+            "comment": "24-bit or higher — studio master quality",
+            "all": [{"gt": {"bitdepth": 16}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Lossy Leftovers", "lossy-leftovers", "Quality & Format", {
+            "name": "Lossy Leftovers",
+            "comment": "Tracks under 320kbps — candidates for upgrade",
+            "all": [{"lt": {"bitrate": 320}}],
+            "sort": "+artist,+album,+track",
+        }),
+
+        # ── Decades ───────────────────────────────────────────────────
+        ("60s Classics", "60s-classics", "Decades", {
+            "name": "60s Classics",
+            "comment": "Everything from 1960–1969",
+            "all": [{"inTheRange": {"year": [1960, 1969]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("70s Classics", "70s-classics", "Decades", {
+            "name": "70s Classics",
+            "comment": "Everything from 1970–1979",
+            "all": [{"inTheRange": {"year": [1970, 1979]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("80s Classics", "80s-classics", "Decades", {
+            "name": "80s Classics",
+            "comment": "Everything from 1980–1989",
+            "all": [{"inTheRange": {"year": [1980, 1989]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("90s Classics", "90s-classics", "Decades", {
+            "name": "90s Classics",
+            "comment": "Everything from 1990–1999",
+            "all": [{"inTheRange": {"year": [1990, 1999]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("2000s Classics", "2000s-classics", "Decades", {
+            "name": "2000s Classics",
+            "comment": "Everything from 2000–2009",
+            "all": [{"inTheRange": {"year": [2000, 2009]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("2010s Classics", "2010s-classics", "Decades", {
+            "name": "2010s Classics",
+            "comment": "Everything from 2010–2019",
+            "all": [{"inTheRange": {"year": [2010, 2019]}}],
+            "sort": "random", "limit": 200,
+        }),
+
+        # ── Complex / Nested ──────────────────────────────────────────
+        ("80s Gold", "80s-gold", "Complex / Nested", {
+            "name": "80s Gold",
+            "comment": "Loved or highly-rated tracks from the 1980s (nested logic)",
+            "all": [
+                {"any": [{"is": {"loved": True}}, {"gt": {"rating": 3}}]},
+                {"inTheRange": {"year": [1980, 1989]}},
+            ],
+            "sort": "year", "order": "desc", "limit": 50,
+        }),
+        ("The Collector", "the-collector", "Complex / Nested", {
+            "name": "The Collector",
+            "comment": "Played 10+ times AND (loved OR rated 4+) — your true obsessions",
+            "all": [
+                {"gt": {"playcount": 9}},
+                {"any": [{"is": {"loved": True}}, {"gt": {"rating": 3}}]},
+            ],
+            "sort": "playcount", "order": "desc",
+        }),
+        ("Guilty Pleasures", "guilty-pleasures", "Complex / Nested", {
+            "name": "Guilty Pleasures",
+            "comment": "High play count but never loved or rated — your secret shames",
+            "all": [
+                {"gt": {"playcount": 5}},
+                {"isNot": {"loved": True}},
+                {"is": {"rating": 0}},
+            ],
+            "sort": "playcount", "order": "desc", "limit": 100,
+        }),
+        ("Compilation Cuts", "compilation-cuts", "Complex / Nested", {
+            "name": "Compilation Cuts",
+            "comment": "Tracks from compilation albums you've loved or played often",
+            "all": [
+                {"is": {"compilation": True}},
+                {"any": [{"is": {"loved": True}}, {"gt": {"playcount": 3}}]},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("Peak Album Experience", "peak-album-experience", "Complex / Nested", {
+            "name": "Peak Album Experience",
+            "comment": "Loved tracks from their original disc 1, ordered by album then track",
+            "all": [
+                {"is": {"loved": True}},
+                {"is": {"discnumber": 1}},
+            ],
+            "sort": "+albumartist,+album,+track",
+        }),
+        ("The Graveyard", "the-graveyard", "Complex / Nested", {
+            "name": "The Graveyard",
+            "comment": "Tracks added over 2 years ago, played once or never, and not loved — do they deserve to stay?",
+            "all": [
+                {"notInTheLast": {"dateadded": 730}},
+                {"lt": {"playcount": 2}},
+                {"isNot": {"loved": True}},
+            ],
+            "sort": "dateadded", "order": "asc", "limit": 200,
+        }),
+    ]
+
+    def deploy_presets(self) -> None:
+        """Let the user pick presets to deploy as .nsp files."""
+        self.rule("Presets")
+        self.out(
+            "\n[dim]Ready-made smart playlists you can deploy instantly.\n"
+            "Pick one to preview and save, or deploy them all at once.[/dim]\n"
+        )
+
+        # Build menu grouped by category
+        categories: Dict[str, List[int]] = {}
+        for i, (_, _, cat, _) in enumerate(self.PRESETS):
+            categories.setdefault(cat, []).append(i)
+
+        options: List[Tuple[Any, str]] = [
+            ("__all__", "[bold green]Deploy ALL presets at once[/bold green]")
+        ]
+        for cat, indices in categories.items():
+            for idx in indices:
+                label, _, _, preset = self.PRESETS[idx]
+                options.append((idx, f"[dim][{cat}][/dim]  {label}"))
+
+        while True:
+            choice = self.select_option("Choose a preset:", options, allow_back=True)
+            if choice is None:
+                return
+
+            if choice == "__all__":
+                self._deploy_all_presets()
+                return
+
+            idx = int(str(choice))
+            label, filename, cat, preset = self.PRESETS[idx]
+            self.out(f"\n[bold yellow]{label}[/bold yellow]  [dim]({cat})[/dim]")
+            self.out(json.dumps(preset, indent=2))
+            if self.confirm(f"\nSave as [cyan]{filename}.nsp[/cyan]?", default=True):
+                self._save_preset(filename, preset)
+
+    def _deploy_all_presets(self) -> None:
+        """Deploy every preset at once."""
+        saved = 0
+        skipped = 0
+        for label, filename, _, preset in self.PRESETS:
+            filepath = self.playlist_dir / f"{filename}.nsp"  # type: ignore
+            if filepath.exists():
+                self.out(f"  [yellow]Skipped:[/yellow] {filename}.nsp (already exists)")
+                skipped += 1
+            else:
+                try:
+                    with open(filepath, "w") as f:
+                        json.dump(preset, f, indent=2)
+                    self.out(f"  [green]Saved:[/green] {filename}.nsp")
+                    saved += 1
+                except Exception as e:
+                    self.out(f"  [red]Error:[/red] {filename}.nsp — {e}")
+        self.out(f"\n[bold green]Done:[/bold green] {saved} saved, {skipped} skipped")
+
+    def _save_preset(self, filename: str, preset: Dict[str, Any]) -> None:
+        """Save a single preset."""
+        if not self.playlist_dir:
+            self.out("[red]No save directory configured.[/red]")
+            return
+        filepath = self.playlist_dir / f"{filename}.nsp"
+        if filepath.exists():
+            if not self.confirm(f"[yellow]{filename}.nsp[/yellow] already exists. Overwrite?", default=False):
+                self.out("[yellow]Skipped.[/yellow]")
+                return
+        try:
+            with open(filepath, "w") as f:
+                json.dump(preset, f, indent=2)
+            self.out(f"[bold green]Saved to:[/bold green] {filepath}")
+        except Exception as e:
+            self.out(f"[red]Could not save: {e}[/red]")
+
     # ── Main menu ─────────────────────────────────────────────────────────────
 
     def main_menu(self) -> None:
@@ -819,7 +1145,8 @@ class SmartPlaylistCreator:
                 "What would you like to do?",
                 [
                     ("create",    "Create a new smart playlist"),
-                    ("examples",  "Browse example playlists"),
+                    ("presets",   "Deploy preset playlists"),
+                    ("examples",  "Browse example JSON"),
                     ("fields",    "View all available fields"),
                     ("directory", "Set / change save directory"),
                     ("exit",      "Exit"),
@@ -835,6 +1162,14 @@ class SmartPlaylistCreator:
                 playlist = self.create_smart_playlist()
                 if playlist:
                     self.preview_and_save(playlist)
+
+            elif choice == "presets":
+                if not self.playlist_dir:
+                    self.out("[yellow]Please set a save directory first.[/yellow]")
+                    self.set_playlist_directory()
+                    if not self.playlist_dir:
+                        continue
+                self.deploy_presets()
 
             elif choice == "examples":
                 self.show_examples()

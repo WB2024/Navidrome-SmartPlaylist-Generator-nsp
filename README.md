@@ -19,6 +19,8 @@ This tool guides you through building those JSON rules entirely through numbered
 
 ## Features
 
+- **30+ ready-made presets** — deploy instant playlists covering essentials, discovery, moods, decades, quality, and complex nested logic
+- **One-click deploy all** — save every preset at once with a single menu choice
 - **100+ fields** — every field Navidrome supports, from core metadata to MusicBrainz IDs and ReplayGain values
 - **Nested rule groups** — create sub-groups with their own AND/OR logic (e.g. "loved OR highly rated" inside an AND query)
 - **Playlist operators** — filter by playlist membership with `inPlaylist` / `notInPlaylist`
@@ -73,10 +75,11 @@ Save directory: /music/SmartPlaylists
 
 What would you like to do?
   1.  Create a new smart playlist
-  2.  Browse example playlists
-  3.  View all available fields
-  4.  Set / change save directory
-  5.  Exit
+  2.  Deploy preset playlists
+  3.  Browse example JSON
+  4.  View all available fields
+  5.  Set / change save directory
+  6.  Exit
 ```
 
 ### Creating a Playlist
@@ -341,9 +344,47 @@ Rule groups can be nested to any depth.
 
 ---
 
+## Presets
+
+Choose **Deploy preset playlists** from the main menu to instantly save ready-made `.nsp` files.
+You can deploy them one at a time (with a preview) or all at once.
+
+| Category | Preset | Description |
+|---|---|---|
+| **Essentials** | Recently Played | Tracks played in the last 30 days |
+| | Recently Added | Added to library in the last 30 days |
+| | Most Played | Top 100 most-played tracks |
+| | Never Played | Unplayed tracks, randomised |
+| | Loved Tracks | All favourited tracks |
+| | Top Rated | Rated 4 stars or higher |
+| **Discovery** | Fresh Blood | Added in last 7 days and never played |
+| | Vinyl Roulette | 50 completely random tracks |
+| | One-Hit Wonders | Played exactly once |
+| | Album Openers | Track 1 from every album |
+| **Rediscovery** | Forgotten Gems | Loved/rated but unplayed for 6+ months (nested) |
+| | Comebacks | Played 5+ times but dormant for 6 months |
+| | Buried Treasure | Added over a year ago, never played |
+| **Moods & Vibes** | Long Drives | Tracks over 6 minutes |
+| | Short & Sweet | Under 3 minutes |
+| | Deep Cuts | Album track 5+ (beyond the singles) |
+| | Slow Burners | Under 100 BPM |
+| | Bangers Only | Over 140 BPM |
+| **Quality & Format** | FLAC Attack | Lossless FLAC only |
+| | Hi-Res Audio | 24-bit or higher |
+| | Lossy Leftovers | Under 320 kbps — upgrade candidates |
+| **Decades** | 60s–2010s Classics | One preset per decade (1960–2019) |
+| **Complex / Nested** | 80s Gold | Loved or rated 4+ AND 1980s (nested) |
+| | The Collector | Played 10+ AND (loved OR rated 4+) |
+| | Guilty Pleasures | High plays but never loved or rated |
+| | Compilation Cuts | Compilation tracks you love or play often |
+| | Peak Album Experience | Loved disc-1 tracks, album order |
+| | The Graveyard | 2+ years old, barely played, unloved — do they stay? |
+
+---
+
 ## Example Playlists
 
-The tool includes these as built-in browsable examples (**Browse example playlists** from the main menu).
+The tool includes these as built-in browsable examples (**Browse example JSON** from the main menu).
 
 ### Recently Played
 Tracks played in the last 30 days, most recent first:

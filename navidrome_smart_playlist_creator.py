@@ -1053,6 +1053,728 @@ class SmartPlaylistCreator:
             ],
             "sort": "dateadded", "order": "asc", "limit": 200,
         }),
+
+        # ── Decades (additional) ─────────────────────────────────────
+        ("Pre-1960 Vintage", "pre-1960-vintage", "Decades", {
+            "name": "Pre-1960 Vintage",
+            "comment": "Music from before 1960 — the golden oldies",
+            "all": [{"lt": {"year": 1960}}, {"gt": {"year": 0}}],
+            "sort": "year", "order": "asc", "limit": 200,
+        }),
+        ("2020s Fresh", "2020s-fresh", "Decades", {
+            "name": "2020s Fresh",
+            "comment": "Everything from 2020 onwards — the latest era",
+            "all": [{"gt": {"year": 2019}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Turn of the Century", "turn-of-the-century", "Decades", {
+            "name": "Turn of the Century",
+            "comment": "Music from 1998-2002 — straddling the millennium",
+            "all": [{"inTheRange": {"year": [1998, 2002]}}],
+            "sort": "random", "limit": 200,
+        }),
+
+        # ── Eras ──────────────────────────────────────────────────────
+        ("British Invasion", "british-invasion", "Eras", {
+            "name": "British Invasion",
+            "comment": "1963-1966 — when Britain conquered the airwaves",
+            "all": [{"inTheRange": {"year": [1963, 1966]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Summer of Love", "summer-of-love", "Eras", {
+            "name": "Summer of Love",
+            "comment": "1967 — peace, love, and psychedelia",
+            "all": [{"is": {"year": 1967}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Punk '77", "punk-77", "Eras", {
+            "name": "Punk '77",
+            "comment": "1977 — the year punk broke",
+            "all": [{"is": {"year": 1977}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("MTV Generation", "mtv-generation", "Eras", {
+            "name": "MTV Generation",
+            "comment": "1981-1992 — I want my MTV",
+            "all": [{"inTheRange": {"year": [1981, 1992]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Grunge Era", "grunge-era", "Eras", {
+            "name": "Grunge Era",
+            "comment": "1991-1994 — flannel shirts and distortion pedals",
+            "all": [{"inTheRange": {"year": [1991, 1994]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Y2K Era", "y2k-era", "Eras", {
+            "name": "Y2K Era",
+            "comment": "1999-2003 — millennium madness and nu-metal",
+            "all": [{"inTheRange": {"year": [1999, 2003]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Disco Fever", "disco-fever", "Eras", {
+            "name": "Disco Fever",
+            "comment": "1975-1980 — mirror balls and platform shoes",
+            "all": [{"inTheRange": {"year": [1975, 1980]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("New Wave", "new-wave", "Eras", {
+            "name": "New Wave",
+            "comment": "1978-1985 — synths, sharp suits, and angular guitars",
+            "all": [{"inTheRange": {"year": [1978, 1985]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Golden Age Hip-Hop", "golden-age-hip-hop", "Eras", {
+            "name": "Golden Age Hip-Hop",
+            "comment": "1986-1996 — the boom-bap golden era",
+            "all": [{"inTheRange": {"year": [1986, 1996]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Britpop", "britpop", "Eras", {
+            "name": "Britpop",
+            "comment": "1993-1997 — Blur vs Oasis and everything in between",
+            "all": [{"inTheRange": {"year": [1993, 1997]}}],
+            "sort": "random", "limit": 200,
+        }),
+
+        # ── Duration ─────────────────────────────────────────────────
+        ("Epic Odysseys", "epic-odysseys", "Duration", {
+            "name": "Epic Odysseys",
+            "comment": "Mammoth tracks over 10 minutes — bring snacks",
+            "all": [{"gt": {"duration": 600}}],
+            "sort": "duration", "order": "desc", "limit": 100,
+        }),
+        ("Marathon Tracks", "marathon-tracks", "Duration", {
+            "name": "Marathon Tracks",
+            "comment": "Ultra-long tracks over 15 minutes — the ultimate endurance test",
+            "all": [{"gt": {"duration": 900}}],
+            "sort": "duration", "order": "desc", "limit": 50,
+        }),
+        ("The Sweet Spot", "the-sweet-spot", "Duration", {
+            "name": "The Sweet Spot",
+            "comment": "Goldilocks tracks — between 3 and 5 minutes",
+            "all": [{"inTheRange": {"duration": [180, 300]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Micro Tracks", "micro-tracks", "Duration", {
+            "name": "Micro Tracks",
+            "comment": "Blink-and-you'll-miss-it — under 60 seconds",
+            "all": [{"lt": {"duration": 60}}, {"gt": {"duration": 0}}],
+            "sort": "duration", "order": "asc", "limit": 100,
+        }),
+        ("The Four-Twenty", "the-four-twenty", "Duration", {
+            "name": "The Four-Twenty",
+            "comment": "Tracks roughly 4 minutes 20 seconds long — nice",
+            "all": [{"inTheRange": {"duration": [258, 262]}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Commute Friendly", "commute-friendly", "Duration", {
+            "name": "Commute Friendly",
+            "comment": "3-7 minute tracks — perfect for the daily commute",
+            "all": [{"inTheRange": {"duration": [180, 420]}}],
+            "sort": "random", "limit": 200,
+        }),
+
+        # ── Tempo & Energy ───────────────────────────────────────────
+        ("Comatose", "comatose", "Tempo & Energy", {
+            "name": "Comatose",
+            "comment": "Sub-70 BPM — practically horizontal music",
+            "all": [{"lt": {"bpm": 70}}, {"gt": {"bpm": 0}}],
+            "sort": "bpm", "order": "asc", "limit": 100,
+        }),
+        ("The Heartbeat Zone", "the-heartbeat-zone", "Tempo & Energy", {
+            "name": "The Heartbeat Zone",
+            "comment": "60-80 BPM — synced to your resting heart rate",
+            "all": [{"inTheRange": {"bpm": [60, 80]}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Walking Pace", "walking-pace", "Tempo & Energy", {
+            "name": "Walking Pace",
+            "comment": "90-110 BPM — perfect for a stroll",
+            "all": [{"inTheRange": {"bpm": [90, 110]}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Jogging Mix", "jogging-mix", "Tempo & Energy", {
+            "name": "Jogging Mix",
+            "comment": "120-140 BPM — keep that pace steady",
+            "all": [{"inTheRange": {"bpm": [120, 140]}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Sprint Mode", "sprint-mode", "Tempo & Energy", {
+            "name": "Sprint Mode",
+            "comment": "160+ BPM — all-out sonic assault",
+            "all": [{"gt": {"bpm": 160}}],
+            "sort": "bpm", "order": "desc", "limit": 100,
+        }),
+        ("Workout Fuel", "workout-fuel", "Tempo & Energy", {
+            "name": "Workout Fuel",
+            "comment": "120-160 BPM, 3-5 minutes — gym-ready bangers",
+            "all": [
+                {"inTheRange": {"bpm": [120, 160]}},
+                {"inTheRange": {"duration": [180, 300]}},
+            ],
+            "sort": "bpm", "order": "desc", "limit": 100,
+        }),
+
+        # ── Stats & Data ─────────────────────────────────────────────
+        ("Heavy Rotation", "heavy-rotation", "Stats & Data", {
+            "name": "Heavy Rotation",
+            "comment": "Played 20+ times — your most-spun records",
+            "all": [{"gt": {"playcount": 19}}],
+            "sort": "playcount", "order": "desc", "limit": 200,
+        }),
+        ("The Obsessions", "the-obsessions", "Stats & Data", {
+            "name": "The Obsessions",
+            "comment": "Played 50+ times — you might have a problem",
+            "all": [{"gt": {"playcount": 49}}],
+            "sort": "playcount", "order": "desc",
+        }),
+        ("The Centurion Club", "the-centurion-club", "Stats & Data", {
+            "name": "The Centurion Club",
+            "comment": "Played 100+ times — welcome to the triple-digit club",
+            "all": [{"gt": {"playcount": 99}}],
+            "sort": "playcount", "order": "desc",
+        }),
+        ("The Untouchables", "the-untouchables", "Stats & Data", {
+            "name": "The Untouchables",
+            "comment": "Perfect 5-star rated tracks — flawless victories",
+            "all": [{"is": {"rating": 5}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("The Indifferent", "the-indifferent", "Stats & Data", {
+            "name": "The Indifferent",
+            "comment": "Rated exactly 3 stars — aggressively mediocre or secretly brilliant?",
+            "all": [{"is": {"rating": 3}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Underrated Gems", "underrated-gems", "Stats & Data", {
+            "name": "Underrated Gems",
+            "comment": "Rated 4+ stars but played fewer than 5 times — criminally underplayed",
+            "all": [{"gt": {"rating": 3}}, {"lt": {"playcount": 5}}],
+            "sort": "rating", "order": "desc", "limit": 100,
+        }),
+        ("Rising Stars", "rising-stars", "Stats & Data", {
+            "name": "Rising Stars",
+            "comment": "Added in the last 90 days and already played 3+ times — instant favourites",
+            "all": [{"inTheLast": {"dateadded": 90}}, {"gt": {"playcount": 2}}],
+            "sort": "playcount", "order": "desc", "limit": 100,
+        }),
+        ("Falling Stars", "falling-stars", "Stats & Data", {
+            "name": "Falling Stars",
+            "comment": "Loved tracks you haven't played in over a year — falling out of favour",
+            "all": [{"is": {"loved": True}}, {"notInTheLast": {"lastplayed": 365}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("The Loyalists", "the-loyalists", "Stats & Data", {
+            "name": "The Loyalists",
+            "comment": "Played recently AND loved — your ride-or-die tracks",
+            "all": [
+                {"inTheLast": {"lastplayed": 30}},
+                {"is": {"loved": True}},
+            ],
+            "sort": "lastplayed", "order": "desc", "limit": 100,
+        }),
+        ("Statistical Anomalies", "statistical-anomalies", "Stats & Data", {
+            "name": "Statistical Anomalies",
+            "comment": "Played 10+ times but rated 1 or 2 — why do you keep listening?",
+            "all": [
+                {"gt": {"playcount": 9}},
+                {"lt": {"rating": 3}},
+                {"gt": {"rating": 0}},
+            ],
+            "sort": "playcount", "order": "desc", "limit": 100,
+        }),
+        ("The One Percent", "the-one-percent", "Stats & Data", {
+            "name": "The One Percent",
+            "comment": "Loved AND 5-star AND played 20+ times — the absolute elite",
+            "all": [
+                {"is": {"loved": True}},
+                {"is": {"rating": 5}},
+                {"gt": {"playcount": 19}},
+            ],
+            "sort": "playcount", "order": "desc",
+        }),
+
+        # ── Track Position ───────────────────────────────────────────
+        ("The B-Team", "the-b-team", "Track Position", {
+            "name": "The B-Team",
+            "comment": "Track 2 — the eternal runner-up, always the bridesmaid",
+            "all": [{"is": {"track": 2}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("The Middle Child", "the-middle-child", "Track Position", {
+            "name": "The Middle Child",
+            "comment": "Tracks 4-7 — the overlooked middle of the album",
+            "all": [{"inTheRange": {"track": [4, 7]}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("The Lucky Seven", "the-lucky-seven", "Track Position", {
+            "name": "The Lucky Seven",
+            "comment": "Track 7 from every album — lucky number listening",
+            "all": [{"is": {"track": 7}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Double Digits", "double-digits", "Track Position", {
+            "name": "Double Digits",
+            "comment": "Track 10 and beyond — deep album territory",
+            "all": [{"gt": {"track": 9}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Track 13", "track-13", "Track Position", {
+            "name": "Track 13",
+            "comment": "The unlucky thirteenth track — cursed bangers only",
+            "all": [{"is": {"track": 13}}],
+            "sort": "random", "limit": 100,
+        }),
+        ("Disc Two Deep Cuts", "disc-two-deep-cuts", "Track Position", {
+            "name": "Disc Two Deep Cuts",
+            "comment": "Everything from disc 2 onwards — the stuff casual fans never reach",
+            "all": [{"gt": {"discnumber": 1}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Hidden Tracks", "hidden-tracks", "Track Position", {
+            "name": "Hidden Tracks",
+            "comment": "Extremely high track numbers and long duration — the secret Easter eggs",
+            "all": [
+                {"gt": {"track": 15}},
+                {"gt": {"duration": 300}},
+            ],
+            "sort": "track", "order": "desc", "limit": 100,
+        }),
+        ("Singles Material", "singles-material", "Track Position", {
+            "name": "Singles Material",
+            "comment": "Tracks 1-3, under 4 minutes — the obvious single choices",
+            "all": [
+                {"inTheRange": {"track": [1, 3]}},
+                {"lt": {"duration": 240}},
+            ],
+            "sort": "random", "limit": 200,
+        }),
+
+        # ── Moods & Vibes (additional) ───────────────────────────────
+        ("Night Owls", "night-owls", "Moods & Vibes", {
+            "name": "Night Owls",
+            "comment": "Long, slow, deep — music for 3 AM",
+            "all": [
+                {"gt": {"duration": 300}},
+                {"lt": {"bpm": 90}},
+                {"gt": {"bpm": 0}},
+            ],
+            "sort": "bpm", "order": "asc", "limit": 100,
+        }),
+        ("Morning Coffee", "morning-coffee", "Moods & Vibes", {
+            "name": "Morning Coffee",
+            "comment": "Moderate tempo, not too long — ease into the day",
+            "all": [
+                {"inTheRange": {"bpm": [85, 120]}},
+                {"lt": {"duration": 300}},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("Study Session", "study-session", "Moods & Vibes", {
+            "name": "Study Session",
+            "comment": "Under 100 BPM and over 4 minutes — focus-friendly background music",
+            "all": [
+                {"lt": {"bpm": 100}},
+                {"gt": {"bpm": 0}},
+                {"gt": {"duration": 240}},
+            ],
+            "sort": "random", "limit": 200,
+        }),
+        ("Road Trip", "road-trip", "Moods & Vibes", {
+            "name": "Road Trip",
+            "comment": "4-7 minute favourites — windows down, volume up",
+            "all": [
+                {"inTheRange": {"duration": [240, 420]}},
+                {"any": [{"is": {"loved": True}}, {"gt": {"rating": 3}}]},
+            ],
+            "sort": "random", "limit": 200,
+        }),
+        ("Dinner Party", "dinner-party", "Moods & Vibes", {
+            "name": "Dinner Party",
+            "comment": "Mellow tempo, mid-length, well-rated — sophisticated background music",
+            "all": [
+                {"inTheRange": {"bpm": [70, 110]}},
+                {"inTheRange": {"duration": [180, 360]}},
+                {"gt": {"rating": 2}},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+
+        # ── Seasonal ─────────────────────────────────────────────────
+        ("Summer Anthems", "summer-anthems", "Seasonal", {
+            "name": "Summer Anthems",
+            "comment": "Upbeat, high-energy, well-loved — soundtrack to endless summers",
+            "all": [
+                {"gt": {"bpm": 110}},
+                {"any": [{"is": {"loved": True}}, {"gt": {"rating": 3}}]},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("Winter Warmers", "winter-warmers", "Seasonal", {
+            "name": "Winter Warmers",
+            "comment": "Slow, long, and cozy — music for blankets and hot chocolate",
+            "all": [
+                {"lt": {"bpm": 100}},
+                {"gt": {"bpm": 0}},
+                {"gt": {"duration": 240}},
+                {"any": [{"is": {"loved": True}}, {"gt": {"rating": 3}}]},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("Rainy Day", "rainy-day", "Seasonal", {
+            "name": "Rainy Day",
+            "comment": "Melancholic tempo, mid-length — perfect for watching the rain",
+            "all": [
+                {"inTheRange": {"bpm": [70, 100]}},
+                {"inTheRange": {"duration": [180, 360]}},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+
+        # ── Quality & Format (additional) ────────────────────────────
+        ("Sonic Giants", "sonic-giants", "Quality & Format", {
+            "name": "Sonic Giants",
+            "comment": "Files over 50 MB — your storage-devouring monsters",
+            "all": [{"gt": {"size": 52428800}}],
+            "sort": "size", "order": "desc", "limit": 100,
+        }),
+        ("The Featherweights", "the-featherweights", "Quality & Format", {
+            "name": "The Featherweights",
+            "comment": "Files under 2 MB — tiny but mighty",
+            "all": [{"lt": {"size": 2097152}}, {"gt": {"size": 0}}],
+            "sort": "size", "order": "asc", "limit": 100,
+        }),
+        ("MP3 Nostalgia", "mp3-nostalgia", "Quality & Format", {
+            "name": "MP3 Nostalgia",
+            "comment": "Good old MP3 files — Napster would be proud",
+            "all": [{"is": {"filetype": "mp3"}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("AAC Collection", "aac-collection", "Quality & Format", {
+            "name": "AAC Collection",
+            "comment": "AAC/M4A files — the iTunes generation",
+            "all": [{"is": {"filetype": "aac"}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Mono Classics", "mono-classics", "Quality & Format", {
+            "name": "Mono Classics",
+            "comment": "Single-channel audio — pre-stereo charm",
+            "all": [{"is": {"channels": 1}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Surround Sound", "surround-sound", "Quality & Format", {
+            "name": "Surround Sound",
+            "comment": "Multi-channel tracks — more than stereo",
+            "all": [{"gt": {"channels": 2}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Lo-Fi Charm", "lo-fi-charm", "Quality & Format", {
+            "name": "Lo-Fi Charm",
+            "comment": "Low bitrate but high play count — proof that quality isn't everything",
+            "all": [{"lt": {"bitrate": 192}}, {"gt": {"playcount": 5}}],
+            "sort": "playcount", "order": "desc", "limit": 100,
+        }),
+        ("The Audiophile", "the-audiophile", "Quality & Format", {
+            "name": "The Audiophile",
+            "comment": "FLAC, 24-bit, and rated 4+ — golden ears only",
+            "all": [
+                {"is": {"filetype": "flac"}},
+                {"gt": {"bitdepth": 16}},
+                {"gt": {"rating": 3}},
+            ],
+            "sort": "random", "limit": 200,
+        }),
+
+        # ── Library Housekeeping ─────────────────────────────────────
+        ("Missing Artwork", "missing-artwork", "Library Housekeeping", {
+            "name": "Missing Artwork",
+            "comment": "Tracks without cover art — naked albums",
+            "all": [{"is": {"hascoverart": False}}],
+            "sort": "+artist,+album,+track",
+        }),
+        ("Recently Modified", "recently-modified", "Library Housekeeping", {
+            "name": "Recently Modified",
+            "comment": "Files modified in the last 30 days — recently re-tagged or updated",
+            "all": [{"inTheLast": {"datemodified": 30}}],
+            "sort": "datemodified", "order": "desc", "limit": 200,
+        }),
+        ("Explicit Only", "explicit-only", "Library Housekeeping", {
+            "name": "Explicit Only",
+            "comment": "Tracks marked as explicit — parental advisory",
+            "all": [{"is": {"explicitstatus": "explicit"}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("The Void", "the-void", "Library Housekeeping", {
+            "name": "The Void",
+            "comment": "Not rated, not loved, never played — do these tracks even exist?",
+            "all": [
+                {"is": {"rating": 0}},
+                {"isNot": {"loved": True}},
+                {"is": {"playcount": 0}},
+            ],
+            "sort": "random", "limit": 200,
+        }),
+        ("Digital Archaeology", "digital-archaeology", "Library Housekeeping", {
+            "name": "Digital Archaeology",
+            "comment": "Files not modified in over 5 years — digital fossils",
+            "all": [{"notInTheLast": {"datemodified": 1825}}],
+            "sort": "datemodified", "order": "asc", "limit": 200,
+        }),
+
+        # ── Albums & Collections ─────────────────────────────────────
+        ("Pure Albums Only", "pure-albums-only", "Albums & Collections", {
+            "name": "Pure Albums Only",
+            "comment": "No compilations — original album tracks only",
+            "all": [{"isNot": {"compilation": True}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("Compilation Discovery", "compilation-discovery", "Albums & Collections", {
+            "name": "Compilation Discovery",
+            "comment": "Unplayed compilation tracks — hidden in the various artists pile",
+            "all": [{"is": {"compilation": True}}, {"is": {"playcount": 0}}],
+            "sort": "random", "limit": 100,
+        }),
+
+        # ── Discovery (additional) ───────────────────────────────────
+        ("Fresh Favorites", "fresh-favorites", "Discovery", {
+            "name": "Fresh Favorites",
+            "comment": "Loved in the last 30 days — your latest sonic crushes",
+            "all": [{"inTheLast": {"dateloved": 30}}],
+            "sort": "dateloved", "order": "desc", "limit": 100,
+        }),
+        ("The Slow Burn", "the-slow-burn", "Discovery", {
+            "name": "The Slow Burn",
+            "comment": "Added over 6 months ago, played for the first time recently — late discovery",
+            "all": [
+                {"notInTheLast": {"dateadded": 180}},
+                {"inTheLast": {"lastplayed": 30}},
+                {"lt": {"playcount": 3}},
+            ],
+            "sort": "lastplayed", "order": "desc", "limit": 100,
+        }),
+
+        # ── Rediscovery (additional) ─────────────────────────────────
+        ("Abandoned Ships", "abandoned-ships", "Rediscovery", {
+            "name": "Abandoned Ships",
+            "comment": "Loved once but not played in 2+ years — what happened?",
+            "all": [
+                {"is": {"loved": True}},
+                {"notInTheLast": {"lastplayed": 730}},
+            ],
+            "sort": "lastplayed", "order": "asc", "limit": 100,
+        }),
+        ("Late Bloomers", "late-bloomers", "Rediscovery", {
+            "name": "Late Bloomers",
+            "comment": "Added over a year ago, first plays in the last 3 months — finally getting attention",
+            "all": [
+                {"notInTheLast": {"dateadded": 365}},
+                {"inTheLast": {"lastplayed": 90}},
+                {"lt": {"playcount": 5}},
+            ],
+            "sort": "lastplayed", "order": "desc", "limit": 100,
+        }),
+
+        # ── Weird & Wonderful ────────────────────────────────────────
+        ("Earworms", "earworms", "Weird & Wonderful", {
+            "name": "Earworms",
+            "comment": "Short tracks with high play counts — catchy hooks that won't leave your head",
+            "all": [
+                {"lt": {"duration": 210}},
+                {"gt": {"playcount": 10}},
+            ],
+            "sort": "playcount", "order": "desc", "limit": 100,
+        }),
+        ("Party Starters", "party-starters", "Weird & Wonderful", {
+            "name": "Party Starters",
+            "comment": "Fast, short, and frequently played — instant party igniters",
+            "all": [
+                {"gt": {"bpm": 120}},
+                {"lt": {"duration": 240}},
+                {"gt": {"playcount": 5}},
+            ],
+            "sort": "bpm", "order": "desc", "limit": 100,
+        }),
+        ("Perfectionist's Pick", "perfectionists-pick", "Weird & Wonderful", {
+            "name": "Perfectionist's Pick",
+            "comment": "Lossless, loved, and rated 5 — the pinnacle of your collection",
+            "all": [
+                {"is": {"filetype": "flac"}},
+                {"is": {"loved": True}},
+                {"is": {"rating": 5}},
+            ],
+            "sort": "+albumartist,+album,+track",
+        }),
+        ("The Completionist", "the-completionist", "Weird & Wonderful", {
+            "name": "The Completionist",
+            "comment": "Loved, rated 5, played 10+ times, with cover art — peak curation",
+            "all": [
+                {"is": {"loved": True}},
+                {"is": {"rating": 5}},
+                {"gt": {"playcount": 9}},
+                {"is": {"hascoverart": True}},
+            ],
+            "sort": "+albumartist,+album,+track",
+        }),
+        ("The Time Capsule", "the-time-capsule", "Weird & Wonderful", {
+            "name": "The Time Capsule",
+            "comment": "Original release date before 1970 — prehistoric recordings in your library",
+            "all": [{"before": {"originaldate": "1970-01-01"}}],
+            "sort": "random", "limit": 200,
+        }),
+        ("New Classics", "new-classics", "Weird & Wonderful", {
+            "name": "New Classics",
+            "comment": "Released 2020+ and already rated 4+ — instant modern classics",
+            "all": [
+                {"gt": {"year": 2019}},
+                {"gt": {"rating": 3}},
+            ],
+            "sort": "rating", "order": "desc", "limit": 100,
+        }),
+        ("Vintage Lossless", "vintage-lossless", "Weird & Wonderful", {
+            "name": "Vintage Lossless",
+            "comment": "Pre-1970 music in FLAC — old soul, pristine quality",
+            "all": [
+                {"lt": {"year": 1970}},
+                {"gt": {"year": 0}},
+                {"is": {"filetype": "flac"}},
+            ],
+            "sort": "year", "order": "asc", "limit": 200,
+        }),
+        ("The Growers", "the-growers", "Weird & Wonderful", {
+            "name": "The Growers",
+            "comment": "Played 10+ times but still not loved — they grew on you quietly",
+            "all": [
+                {"gt": {"playcount": 9}},
+                {"isNot": {"loved": True}},
+            ],
+            "sort": "playcount", "order": "desc", "limit": 100,
+        }),
+        ("The Soundtrack", "the-soundtrack", "Weird & Wonderful", {
+            "name": "The Soundtrack",
+            "comment": "Your loved tracks, album-ordered — the movie of your life",
+            "all": [{"is": {"loved": True}}],
+            "sort": "+year,+albumartist,+album,+track",
+        }),
+        ("The Anti-Shuffle", "the-anti-shuffle", "Weird & Wonderful", {
+            "name": "The Anti-Shuffle",
+            "comment": "Your best tracks in strict chronological order — no randomness allowed",
+            "all": [
+                {"any": [{"is": {"loved": True}}, {"gt": {"rating": 3}}]},
+            ],
+            "sort": "+year,+album,+track",
+        }),
+        ("Zero to Hero", "zero-to-hero", "Weird & Wonderful", {
+            "name": "Zero to Hero",
+            "comment": "Never played but recently added — fresh arrivals awaiting their debut",
+            "all": [
+                {"is": {"playcount": 0}},
+                {"inTheLast": {"dateadded": 14}},
+            ],
+            "sort": "dateadded", "order": "desc", "limit": 200,
+        }),
+        ("The Shapeshifters", "the-shapeshifters", "Weird & Wonderful", {
+            "name": "The Shapeshifters",
+            "comment": "Tracks from multi-disc albums — sprawling artistic statements",
+            "all": [{"gt": {"discnumber": 1}}],
+            "sort": "+albumartist,+album,+discnumber,+track",
+        }),
+        ("Format Roulette", "format-roulette", "Weird & Wonderful", {
+            "name": "Format Roulette",
+            "comment": "Non-FLAC, non-MP3 files — the weird and wonderful formats",
+            "all": [
+                {"isNot": {"filetype": "flac"}},
+                {"isNot": {"filetype": "mp3"}},
+            ],
+            "sort": "random", "limit": 200,
+        }),
+
+        # ── Complex / Nested (additional) ────────────────────────────
+        ("The Renaissance", "the-renaissance", "Complex / Nested", {
+            "name": "The Renaissance",
+            "comment": "Not played in 6+ months but recently loved or rated — rediscovered and reborn",
+            "all": [
+                {"notInTheLast": {"lastplayed": 180}},
+                {"any": [
+                    {"inTheLast": {"dateloved": 60}},
+                    {"gt": {"rating": 3}},
+                ]},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("Genre Hopper", "genre-hopper", "Complex / Nested", {
+            "name": "Genre Hopper",
+            "comment": "Loved tracks from compilations or multi-disc sets — eclectic by nature",
+            "all": [
+                {"is": {"loved": True}},
+                {"any": [
+                    {"is": {"compilation": True}},
+                    {"gt": {"discnumber": 1}},
+                ]},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("The Paradox", "the-paradox", "Complex / Nested", {
+            "name": "The Paradox",
+            "comment": "Low-rated tracks you've played a lot OR high-rated ones you've barely touched",
+            "any": [
+                {"all": [{"lt": {"rating": 3}}, {"gt": {"rating": 0}}, {"gt": {"playcount": 10}}]},
+                {"all": [{"gt": {"rating": 3}}, {"lt": {"playcount": 3}}]},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("The Upgrade List", "the-upgrade-list", "Complex / Nested", {
+            "name": "The Upgrade List",
+            "comment": "Loved tracks in lossy format — candidates for a lossless upgrade",
+            "all": [
+                {"is": {"loved": True}},
+                {"any": [
+                    {"is": {"filetype": "mp3"}},
+                    {"is": {"filetype": "aac"}},
+                    {"is": {"filetype": "ogg"}},
+                ]},
+            ],
+            "sort": "+albumartist,+album,+track",
+        }),
+        ("Peak Discovery", "peak-discovery", "Complex / Nested", {
+            "name": "Peak Discovery",
+            "comment": "Added in the last 90 days AND (already loved OR rated 4+) — love at first listen",
+            "all": [
+                {"inTheLast": {"dateadded": 90}},
+                {"any": [{"is": {"loved": True}}, {"gt": {"rating": 3}}]},
+            ],
+            "sort": "dateadded", "order": "desc", "limit": 100,
+        }),
+        ("The Deep End", "the-deep-end", "Complex / Nested", {
+            "name": "The Deep End",
+            "comment": "Long tracks (7+ min), loved or highly rated, from deep in the album — sonic journeys",
+            "all": [
+                {"gt": {"duration": 420}},
+                {"gt": {"track": 5}},
+                {"any": [{"is": {"loved": True}}, {"gt": {"rating": 3}}]},
+            ],
+            "sort": "duration", "order": "desc", "limit": 100,
+        }),
+        ("The Full Circle", "the-full-circle", "Complex / Nested", {
+            "name": "The Full Circle",
+            "comment": "Track 1 from albums where you've loved it AND played 5+ times — iconic opening moments",
+            "all": [
+                {"is": {"track": 1}},
+                {"is": {"loved": True}},
+                {"gt": {"playcount": 4}},
+            ],
+            "sort": "random", "limit": 100,
+        }),
+        ("The Shelf Life", "the-shelf-life", "Complex / Nested", {
+            "name": "The Shelf Life",
+            "comment": "Added 1-2 years ago, played 1-3 times, not loved — the forgotten middle ground",
+            "all": [
+                {"notInTheLast": {"dateadded": 365}},
+                {"inTheLast": {"dateadded": 730}},
+                {"inTheRange": {"playcount": [1, 3]}},
+                {"isNot": {"loved": True}},
+            ],
+            "sort": "random", "limit": 100,
+        }),
     ]
 
     def deploy_presets(self) -> None:
